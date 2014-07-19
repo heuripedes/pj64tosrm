@@ -2,24 +2,24 @@
 /* pj64tosrm
  * Combine Project64's save files (*.eep, *.mpk, *.fla, *.sra) into a
  * libretro-mupen64 save file (*.srm).
+ *
+ * License: CC0
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <unistd.h>
-#include <errno.h>
 
 /* from libretro's mupen64+ source (save_memory_data) */
 static struct
 {
-    uint8_t eeprom[0x200];
-    /*uint8_t mempack[4][0x8000];*/
+	uint8_t eeprom[0x200];
+	/*uint8_t mempack[4][0x8000];*/
 	uint8_t mempack[0x20000];
-    uint8_t sram[0x8000];
-    uint8_t flashram[0x20000];
-} __attribute__((packed)) srm;
+	uint8_t sram[0x8000];
+	uint8_t flashram[0x20000];
+} srm;
 
 static void die(const char *msg)
 {
@@ -49,7 +49,9 @@ static void read_mem(const char *filename, void *dest, size_t size)
 
 int main(int argc, char *argv[])
 {
-	FILE *fp = NULL;
+	FILE *fp;
+	int i;
+	int inputs = 0;
 
 	if (argc < 4) {
 Usage:
@@ -57,8 +59,7 @@ Usage:
 		exit(EXIT_FAILURE);
 	}
 
-	int i;
-	int inputs = 0;
+	memset(&srm, 0, sizeof(srm));
 
 	for (i = 2; i < argc; ++i) {
 		if (!strcmp(argv[i], "-h"))
@@ -94,9 +95,8 @@ Usage:
 		}
 	}
 
-	if (!inputs) {
+	if (!inputs)
 		die("no input file.");
-	}
 
 	fp = fopen(argv[1], "wb");
 
