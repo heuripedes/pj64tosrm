@@ -1,9 +1,17 @@
 binext=
 target=pj64tosrm$(binext)
 objects=pj64tosrm.o
-cflags=-Wall -g -O2 $(extracflags)
+cflags=-Wall
 lflags=
 libs=
+
+ifeq ($(debug),1)
+    cflags += -ggdb
+else
+    cflags += -s -O2
+endif
+
+cflags += $(extracflags)
 
 all: $(target)
 clean:
